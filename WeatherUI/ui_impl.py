@@ -1,13 +1,36 @@
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
+from WeatherUI.data import data
+from WeatherUI.ui_operations import UIOps
+import pytest
 
 
-browser = webdriver.Chrome(r"D:\pythonProject\WeatherUI\executable\chromedriver.exe")
+@pytest.fixture(scope="module")
+def set_up():
+    UIOps().open_browser()
+    yield
+    UIOps().close_browser()
 
-browser.get('http://www.yahoo.com')
-assert 'Yahoo' in browser.title
 
-elem = browser.find_element_by_name('p')  # Find the search box
-elem.send_keys('seleniumhq' + Keys.RETURN)
+class UIimpl:
 
-browser.quit()
+    def cancel_alert(self):
+        UIOps().explicit_wait_and_moveto_alert().dismiss()
+
+    def get_weather_info_by_selecting_city(self):
+
+        UIOps().click_element_by_xpath(data.openExtraMenuBars_xpath)  # Expand the menu bar
+        UIOps().click_element_by_xpath(data.weatherTab_XPATH) # Click on Weather tab
+        #select a city
+        if (UIOps().isAlreadySelected_by_ID(data.city)):
+            UIOps().click_element(data.locator, data.city_text)
+        else:
+            UIOps().click_element(data.locator, data.city)
+            UIOps().click_element(data.locator, data.city_text)
+        city_temp_in_celcius = UIOps().get_element_text(data.locator, data.tempForSelecetedCity)
+        print("city_temp_in_celcius:::",city_temp_in_celcius)
+
+
+
+
+
+
+

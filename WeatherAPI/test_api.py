@@ -1,10 +1,13 @@
 import pytest
-import requests
+import json
 from WeatherAPI.api import API
 
 
 class TestAPI:
     def test_get_current_weather_for_city(self):
         response = API.get_weatherinfo_by_cityname(self)
-        print(response.status_code)
+        rs = response.json()
+        print(rs["main"]["temp"])
+
+
 
